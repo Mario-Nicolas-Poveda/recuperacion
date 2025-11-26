@@ -3,15 +3,7 @@ package com.chathumal.smapp.service.mapper;
 import com.chathumal.smapp.dto.UserDTO;
 import com.chathumal.smapp.entity.User;
 
-/**
- * Implementation of User mapping logic.
- * Modeled after PostgresDatabaseConnection in configDb package.
- * 
- * Follows:
- * - SRP: Single responsibility of DTO ↔ Entity conversion
- * - OCP: Can be extended or wrapped (e.g., ValidationUserMapper)
- * - LSP: Perfectly substitutable with any IUserMapper
- */
+
 public class UserMapperImpl implements IUserMapper {
 
     @Override

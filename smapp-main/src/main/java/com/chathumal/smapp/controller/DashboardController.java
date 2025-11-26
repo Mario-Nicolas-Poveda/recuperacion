@@ -1,7 +1,7 @@
 package com.chathumal.smapp.controller;
 
 import com.chathumal.smapp.HelloApplication;
-import com.chathumal.smapp.entity.User;
+import com.chathumal.smapp.dto.UserDTO;
 import com.chathumal.smapp.exception.DuplicateEntryException;
 import com.chathumal.smapp.exception.ExceptionHandlerUtil;
 import com.chathumal.smapp.exception.NotFoundException;
@@ -71,7 +71,7 @@ public class DashboardController {
         String userEmail = UserSession.getInstance().getEmail();
         txtEmail.setText(userEmail);
         try {
-            User user = getUserByEmail(userEmail);
+            UserDTO user = getUserByEmail(userEmail);
             if (user != null) {
                 updateProfileFields(user);
                 boolean fulacs = user.isFulacs();
@@ -92,15 +92,15 @@ public class DashboardController {
         loadUserStatistics();
     }
 
-    private User getUserByEmail(String email) throws NotFoundException, Exception {
-        User user = userService.findByEmail(email);
+    private UserDTO getUserByEmail(String email) throws NotFoundException, Exception {
+        UserDTO user = userService.findByEmail(email);
         if (user == null) {
             throw new NotFoundException("User not found for email: " + email);
         }
         return user;
     }
 
-    private void updateProfileFields(User user) {
+    private void updateProfileFields(UserDTO user) {
         txtAddress.setText(user.getAddress());
         txtMobile.setText(user.getContact());
         txtName.setText(user.getName());
@@ -114,7 +114,7 @@ public class DashboardController {
 
     public void listOfAllUsersUserTab() {
         scrollPaneListOfUsers.setContent(null);
-        List<User> allUsers = null;
+        List<UserDTO> allUsers = null;
         UserService userService = (UserService) ServiceFactory.getInstance().getService(ServiceFactory.Type.USER);
 
         try {
@@ -130,7 +130,7 @@ public class DashboardController {
         scrollPaneListOfUsers.setFitToHeight(true);
 
         if (allUsers != null && !allUsers.isEmpty()) {
-            for (User user : allUsers) {
+            for (UserDTO user : allUsers) {
                 // Crear un panel para cada usuario con diseño mejorado
                 AnchorPane userCard = new AnchorPane();
                 userCard.setStyle(
@@ -201,9 +201,10 @@ public class DashboardController {
         if (confirmUpdate) {
             if (isValidUpdateNewUser()) {
                 try {
-                    boolean b = userService.addUser(txtCreateUserName.getText(), txtCreateUserAddress.getText(),
-                            txtCreateUserMobile.getText(), txtCreateUserEmail.getText(),
-                            txtCreateUserPassword.getText(), chkboxAdmAccess.isSelected());
+                    boolean b = userService
+                            .addUser(new UserDTO(txtCreateUserName.getText(), txtCreateUserAddress.getText(),
+                                    txtCreateUserMobile.getText(), txtCreateUserEmail.getText(),
+                                    txtCreateUserPassword.getText(), chkboxAdmAccess.isSelected()));
                     if (b) {
                         AlertUtil.showInfoAlert("Success", "User Create successful");
                     } else {
@@ -241,9 +242,9 @@ public class DashboardController {
         if (confirmUpdate) {
             if (isValidUpdate()) {
                 try {
-                    userService.updateUser(Integer.valueOf(txtUserId.getText()), txtName.getText(),
+                    userService.updateUser(new UserDTO(Integer.valueOf(txtUserId.getText()), txtName.getText(),
                             txtAddress.getText(), txtMobile.getText(), txtEmail.getText(), txtPassword.getText(),
-                            false);
+                            false));
                     AlertUtil.showInfoAlert("Success", "Update successful");
                 } catch (NotFoundException e) {
                     AlertUtil.showErrorAlert("User Not Found", "User profile could not be found.");
@@ -412,7 +413,7 @@ public class DashboardController {
 
     private void loadUserStatistics() {
         try {
-            List<User> allUsers = userService.findAllUsers();
+            List<UserDTO> allUsers = userService.findAllUsers();
 
             // Update Total Users Card
             if (lblTotalUsers != null) {
@@ -420,7 +421,7 @@ public class DashboardController {
             }
 
             // Update User Info Cards (Green/Red)
-            User currentUser = UserSession.getInstance().getCurrentUser();
+            UserDTO currentUser = UserSession.getInstance().getCurrentUser();
             if (currentUser != null) {
                 // Green Card: My Posts
                 if (lblUserName != null) {
@@ -437,7 +438,7 @@ public class DashboardController {
             }
 
             long adminCount = allUsers.stream()
-                    .filter(User::isFulacs)
+                    .filter(UserDTO::isFulacs)
                     .count();
 
             long normalCount = allUsers.size() - adminCount;

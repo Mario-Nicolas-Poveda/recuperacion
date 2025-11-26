@@ -1,6 +1,6 @@
 package com.chathumal.smapp.controller;
 
-import com.chathumal.smapp.entity.User;
+import com.chathumal.smapp.dto.UserDTO;
 import com.chathumal.smapp.exception.ExceptionHandlerUtil;
 import com.chathumal.smapp.service.ServiceFactory;
 import com.chathumal.smapp.service.custom.UserService;
@@ -38,7 +38,7 @@ public class LoginController {
                 AlertUtil.showErrorAlert("Invalid Password", "Password must be at least 4 characters long.");
                 return;
             }
-            User user = service.findByEmail(email);
+            UserDTO user = service.findByEmail(email);
             if (user == null) {
                 AlertUtil.showErrorAlert("User Not Found", "No user found with the provided email.");
                 return;

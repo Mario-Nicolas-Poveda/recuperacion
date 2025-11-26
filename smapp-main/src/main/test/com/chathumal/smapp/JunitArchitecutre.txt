@@ -1,0 +1,4 @@
+junit platform - that provides an API to launch the test from either the ids build tool or consoles
+junit jupiter module - which provides an API to write our junit test and extension
+junit vintage - which provides a test engine implementation support backward compatability for test written with junit 3 and junit 4
+3rd party testing framework - enable 3rd party test frameworks to build their own API to write the tests reuse the junit platform
